@@ -1,7 +1,7 @@
 Easy to use - run and go - just need edit with notepad and change path to webhook from discord - discord server -> settings -> share/or whatever is callled - new webhook -  copy/paste link
 set "COPYPASTE WEBHOOK FROM DISCORD SERVER HERE" webhook from discord
 set "SERVER_NAME=NAMEOFYOURSERVER/REALM HERE" for example WOW server
-set "PROCESS_NAME=EXACTNAMEOFEXEFILEYOUWANTMONITOR" -> for example server.exe
+set "PROCESS_NAME=EXACTNAMEOFEXEFILEYOUWANTMONITOR" -> for example server.exe (same name as .exe file u want monitor)
 FILE NEED TO BE IN SAME FOLDER AS .EXE TO MONITOR/U CAN USE R CLICK - SEND TO - DESKTOP if you want...its usable on all types of exe files.
 
 Save as "StartMonitor.bat"
