@@ -9,42 +9,40 @@ Save as "StartMonitor.bat"
 
 
 @echo off
-REM === Nastavení proměnných ===
-set "COPYPASTE WEBHOOK FROM DISCORD SERVER HERE"
-set "SERVER_NAME=NAMEOFYOURSERVER/REALM HERE"
-set "PS1_NAME=monitor.ps1"
-set "PROCESS_NAME=EXACTNAMEOFEXEFILEYOUWANTMONITOR"
+setlocal EnableDelayedExpansion
 
-REM === Vytvoření PowerShell skriptu ===
-REM Odstraníme starý, pokud existuje:
-if exist "%PS1_NAME%" del "%PS1_NAME%"
+:: === Nastavení proměnných ===
+set "WEBHOOK=https://discord.com/api/"
+set "SERVER_NAME=Realm or server name"
+set "PROC_NAME=worldserver.exefilename"  :: jméno EXE bez .exe, včetně dvou mezer
 
-REM Zápis PowerShell kódu do monitor.ps1
-echo # Monitoruje proces serveru a posílá status na Discord > "%PS1_NAME%"
-echo $webhook = "%WEBHOOK%" >> "%PS1_NAME%"
-echo $serverName = "%SERVER_NAME%" >> "%PS1_NAME%"
-echo $onlineSent = $false >> "%PS1_NAME%"
-echo $offlineSent = $false >> "%PS1_NAME%"
-echo while ($true) { >> "%PS1_NAME%"
-echo     $process = Get-Process -Name "%PROCESS_NAME%" -ErrorAction SilentlyContinue >> "%PS1_NAME%"
-echo     if ($process) { >> "%PS1_NAME%"
-echo         if (-not $onlineSent) { >> "%PS1_NAME%"
-echo             Invoke-RestMethod -Uri $webhook -Method Post -Body (@{content=":green_circle: **$serverName is ONLINE!**"} ^| ConvertTo-Json) -ContentType "application/json" >> "%PS1_NAME%"
-echo             $onlineSent = $true >> "%PS1_NAME%"
-echo             $offlineSent = $false >> "%PS1_NAME%"
-echo         } >> "%PS1_NAME%"
-echo     } else { >> "%PS1_NAME%"
-echo         if (-not $offlineSent) { >> "%PS1_NAME%"
-echo             Invoke-RestMethod -Uri $webhook -Method Post -Body (@{content=":red_circle: **$serverName is OFFLINE!**"} ^| ConvertTo-Json) -ContentType "application/json" >> "%PS1_NAME%"
-echo             $offlineSent = $true >> "%PS1_NAME%"
-echo             $onlineSent = $false >> "%PS1_NAME%"
-echo         } >> "%PS1_NAME%"
-echo     } >> "%PS1_NAME%"
-echo     Start-Sleep -Seconds 10 >> "%PS1_NAME%"
-echo } >> "%PS1_NAME%"
+:: Stavy – 0 = nikdy ještě neposláno, 1 = již odesláno
+set "ONLINE=0"
+set "OFFLINE=0"
 
-REM === Spusť PowerShell skript v novém okně ===
-start powershell -NoExit -ExecutionPolicy Bypass -File "%PS1_NAME%"
+:LOOP
+  :: Hledáme jakýkoli proces, jehož řádek obsahuje PROC_NAME
+  tasklist | findstr /I "%PROC_NAME%" >nul
+  if errorlevel 1 (
+    :: proces NEBĚŽÍ
+    if "!OFFLINE!"=="0" (
+      echo %DATE% %TIME% — %SERVER_NAME% OFFLINE
+      powershell -NoProfile -Command ^
+        "Invoke-RestMethod -Uri '%WEBHOOK%' -Method Post -Body (ConvertTo-Json @{content=':red_circle: **%SERVER_NAME% is OFFLINE!**'}) -ContentType 'application/json'"
+      set "OFFLINE=1"
+      set "ONLINE=0"
+    )
+  ) else (
+    :: proces BĚŽÍ
+    if "!ONLINE!"=="0" (
+      echo %DATE% %TIME% — %SERVER_NAME% ONLINE
+      powershell -NoProfile -Command ^
+        "Invoke-RestMethod -Uri '%WEBHOOK%' -Method Post -Body (ConvertTo-Json @{content=':green_circle: **%SERVER_NAME% is ONLINE!**'}) -ContentType 'application/json'"
+      set "ONLINE=1"
+      set "OFFLINE=0"
+    )
+  )
 
-echo PowerShell monitor byl spuštěn v novém okně.
-pause
+  timeout /t 10 /nobreak >nul
+goto LOOP
+
