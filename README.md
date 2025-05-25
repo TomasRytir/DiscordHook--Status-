@@ -1,4 +1,9 @@
 Easy to use - run and go - just need edit with notepad and change path to webhook from discord - discord server -> settings -> share/or whatever is callled - new webhook -  copy/paste link
+set "COPYPASTE WEBHOOK FROM DISCORD SERVER HERE" webhook from discord
+set "SERVER_NAME=NAMEOFYOURSERVER/REALM HERE" for example WOW server
+set "PROCESS_NAME=EXACTNAMEOFEXEFILEYOUWANTMONITOR" -> for example server.exe
+FILE NEED TO BE IN SAME FOLDER AS .EXE TO MONITOR/U CAN USE R CLICK - SEND TO - DESKTOP if you want...its usable on all types of exe files.
+
 Save as "StartMonitor.bat"
 ![image](https://github.com/user-attachments/assets/4623e9de-5e5d-4756-af67-8a948dc27f1f)
 
@@ -8,7 +13,7 @@ REM === Nastavení proměnných ===
 set "COPYPASTE WEBHOOK FROM DISCORD SERVER HERE"
 set "SERVER_NAME=NAMEOFYOURSERVER/REALM HERE"
 set "PS1_NAME=monitor.ps1"
-set "PROCESS_NAME=worldserver V13 complete"
+set "PROCESS_NAME=EXACTNAMEOFEXEFILEYOUWANTMONITOR"
 
 REM === Vytvoření PowerShell skriptu ===
 REM Odstraníme starý, pokud existuje:
