@@ -1,5 +1,6 @@
 Easy to use - run and go - just need edit with notepad and change path to webhook from discord - discord server -> settings -> share/or whatever is callled - new webhook -  copy/paste link
-
+Save as "StartMonitor.bat"
+![image](https://github.com/user-attachments/assets/4623e9de-5e5d-4756-af67-8a948dc27f1f)
 
 
 @echo off
